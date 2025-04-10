@@ -302,7 +302,7 @@ export default function Home() {
                 transition={{ duration: 0.3 }}
               >
                 <h1 className="text-3xl font-bold mb-8 text-center bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
-                  AI Flash Cards
+                  StudyBuddy Flash Cards
                 </h1>
 
                 <Card className="w-full max-w-md mx-auto p-6 mb-8 border-primary/20">
@@ -351,7 +351,7 @@ export default function Home() {
                             {isGenerating ? (
                               <>
                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                 Generating...
+                                Generating...
                               </>
                             ) : (
                               "Generate"
