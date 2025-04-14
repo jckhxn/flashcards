@@ -5,13 +5,27 @@ export interface FlashCardData {
   details?: string;
 }
 
-export interface CardSet {
+export type GenerationTab = "ai" | "manual";
+export type ViewMode = "generation" | "study" | "list" | "sets";
+
+export interface FlashCardSet {
   id: string;
+  created_at: string;
   name: string;
+  topic: string;
   cards: FlashCardData[];
   isAIGenerated: boolean;
-  createdAt: string;
 }
 
-export type ViewMode = "generation" | "study" | "list" | "sets";
-export type GenerationTab = "ai" | "manual";
+// Database types for Supabase
+export interface Database {
+  public: {
+    Tables: {
+      card_sets: {
+        Row: FlashCardSet;
+        Insert: Omit<FlashCardSet, "id" | "created_at">;
+        Update: Partial<Omit<FlashCardSet, "id" | "created_at">>;
+      };
+    };
+  };
+}

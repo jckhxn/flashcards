@@ -21,6 +21,7 @@ interface GenerationViewProps {
   setEditingCardIndex: (index: number | null) => void;
   handleGenerateCards: () => Promise<void>;
   handleAddManualCard: (card: FlashCardData) => void;
+  handleSaveCardSet: () => Promise<void>;
   setCurrentView: (view: ViewMode) => void;
 }
 
@@ -37,6 +38,7 @@ export function GenerationView({
   setEditingCardIndex,
   handleGenerateCards,
   handleAddManualCard,
+  handleSaveCardSet,
   setCurrentView,
 }: GenerationViewProps) {
   return (
@@ -176,25 +178,29 @@ export function GenerationView({
               <p className="text-xs sm:text-sm text-muted-foreground">
                 {editingCardIndex !== null
                   ? "Update this flash card with new information."
-                  : "Manually create custom flash cards for your study sessions."}
+                  : "Manually create custom flash cards for your study sessions. Fill out the form and click 'Add Card' to create a card. You can add multiple cards to your set."}
               </p>
             </div>
 
             <div className="space-y-3">
               <Label htmlFor="topic-name" className="text-sm sm:text-base">
-                Topic Name (Optional)
+                Topic Name (Required)
               </Label>
               <Input
                 id="topic-name"
-                placeholder="Enter a name for your flash card set"
+                placeholder="Enter a topic for your flash card set"
                 value={topic}
                 onChange={(e) => setTopic(e.target.value)}
                 className="border-primary/20 focus-visible:ring-primary/70"
+                required
               />
             </div>
 
             <ManualCardForm
-              onAddCard={handleAddManualCard}
+              onAddCard={(card) => {
+                handleAddManualCard(card);
+                // Show a success message or toast here if you have one
+              }}
               initialCard={
                 editingCardIndex !== null
                   ? flashCards[editingCardIndex]
@@ -228,8 +234,21 @@ export function GenerationView({
                     >
                       Study
                     </Button>
+                    <Button
+                      variant="default"
+                      size="sm"
+                      onClick={handleSaveCardSet}
+                      disabled={!topic.trim()}
+                    >
+                      Save Set
+                    </Button>
                   </div>
                 </div>
+                {!topic.trim() && (
+                  <p className="text-xs text-destructive mt-2">
+                    Please enter a topic name before saving the set.
+                  </p>
+                )}
               </div>
             )}
           </TabsContent>

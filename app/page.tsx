@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Database, Sun, Moon } from "lucide-react";
+import { Database, Sun, Moon, Loader2, AlertTriangle } from "lucide-react";
 import { useTheme } from "next-themes";
 import { AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
@@ -81,6 +81,9 @@ export default function Home() {
     cardCount,
     setCardCount,
     editingCardIndex,
+    setEditingCardIndex,
+    isLoading,
+    error,
     handleGenerateCards,
     handleAddManualCard,
     handleEditCard,
@@ -136,6 +139,35 @@ export default function Home() {
     setTheme(resolvedTheme === "dark" ? "light" : "dark");
   };
 
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-primary" />
+          <p>Loading your flash cards...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center">
+          <AlertTriangle className="h-8 w-8 mx-auto mb-4 text-destructive" />
+          <p className="text-destructive">{error}</p>
+          <Button
+            variant="outline"
+            className="mt-4"
+            onClick={() => window.location.reload()}
+          >
+            Try Again
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   if (!mounted) {
     return null;
   }
@@ -188,8 +220,10 @@ export default function Home() {
                 setCardCount={setCardCount}
                 flashCards={flashCards}
                 editingCardIndex={editingCardIndex}
+                setEditingCardIndex={setEditingCardIndex}
                 handleGenerateCards={handleGenerateCards}
                 handleAddManualCard={handleAddManualCard}
+                handleSaveCardSet={handleSaveCardSet}
                 setCurrentView={(view: ViewMode) => setCurrentView(view)}
               />
             )}
@@ -233,6 +267,7 @@ export default function Home() {
                 onDelete={handleDeleteCardSet}
                 currentSetId={currentSetId}
                 onReturn={() => setCurrentView("generation")}
+                loading={isLoading}
               />
             )}
           </AnimatePresence>
