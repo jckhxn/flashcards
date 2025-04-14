@@ -1,23 +1,23 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState, useEffect } from "react"
-import { Card, CardContent, CardFooter } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Lightbulb, RotateCw } from "lucide-react"
-import { motion, AnimatePresence } from "framer-motion"
+import type React from "react";
+import { useState, useEffect } from "react";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Lightbulb, RotateCw } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface FlashCardProps {
   frontContent: {
-    title: string
-    hint?: string
-  }
+    title: string;
+    hint?: string;
+  };
   backContent: {
-    answer: string
-    details?: string
-  }
-  direction?: "left" | "right" | null
-  showHintButton?: boolean
+    answer: string;
+    details?: string;
+  };
+  direction?: "left" | "right" | null;
+  showHintButton?: boolean;
 }
 
 export default function FlashCard({
@@ -26,26 +26,26 @@ export default function FlashCard({
   direction = null,
   showHintButton = true,
 }: FlashCardProps) {
-  const [isFlipped, setIsFlipped] = useState(false)
-  const [showHint, setShowHint] = useState(false)
+  const [isFlipped, setIsFlipped] = useState(false);
+  const [showHint, setShowHint] = useState(false);
 
   // Reset flip state when card changes
   useEffect(() => {
-    setIsFlipped(false)
-    setShowHint(false)
-  }, [frontContent.title])
+    setIsFlipped(false);
+    setShowHint(false);
+  }, [frontContent.title]);
 
   const handleFlip = () => {
-    setIsFlipped(!isFlipped)
+    setIsFlipped(!isFlipped);
     if (isFlipped) {
-      setShowHint(false)
+      setShowHint(false);
     }
-  }
+  };
 
   const handleShowHint = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    setShowHint(true)
-  }
+    e.stopPropagation();
+    setShowHint(true);
+  };
 
   // Card animation variants
   const cardVariants = {
@@ -74,7 +74,7 @@ export default function FlashCard({
         scale: { duration: 0.2 },
       },
     }),
-  }
+  };
 
   return (
     <AnimatePresence mode="wait" custom={direction}>
@@ -94,7 +94,11 @@ export default function FlashCard({
           }`}
         >
           {/* Front of card */}
-          <Card className={`absolute w-full h-full backface-hidden border-primary/20 ${isFlipped ? "invisible" : ""}`}>
+          <Card
+            className={`absolute w-full h-full backface-hidden border-primary/20 ${
+              isFlipped ? "invisible" : ""
+            }`}
+          >
             <CardContent className="flex flex-col items-center justify-center h-full p-6">
               <motion.h3
                 className="text-xl font-semibold text-center mb-6 leading-relaxed"
@@ -110,8 +114,9 @@ export default function FlashCard({
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.2, duration: 0.3 }}
+                  className="flex justify-center w-full"
                 >
-                  <Button variant="outline" size="sm" className="mt-4" onClick={handleShowHint}>
+                  <Button variant="outline" size="sm" onClick={handleShowHint}>
                     <Lightbulb className="mr-2 h-4 w-4" />
                     Show Hint
                   </Button>
@@ -120,13 +125,14 @@ export default function FlashCard({
 
               {showHint && frontContent.hint && (
                 <motion.div
-                  className="mt-4 p-4 bg-amber-50 dark:bg-amber-950/30 text-amber-800 dark:text-amber-300 rounded-md text-sm w-full max-w-md"
+                  className="mt-4 p-4 bg-amber-50 dark:bg-amber-950/30 text-amber-800 dark:text-amber-300 rounded-md text-sm w-full max-w-md mx-auto"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <p>
-                    <span className="font-medium">Hint:</span> {frontContent.hint}
+                  <p className="text-center">
+                    <span className="font-medium">Hint:</span>{" "}
+                    {frontContent.hint}
                   </p>
                 </motion.div>
               )}
@@ -153,17 +159,25 @@ export default function FlashCard({
               <motion.div
                 className="text-center"
                 initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: isFlipped ? 1 : 0, scale: isFlipped ? 1 : 0.8 }}
+                animate={{
+                  opacity: isFlipped ? 1 : 0,
+                  scale: isFlipped ? 1 : 0.8,
+                }}
                 transition={{ duration: 0.3, delay: 0.1 }}
               >
-                <h3 className="text-2xl font-bold mb-4 text-primary">{backContent.answer}</h3>
+                <h3 className="text-2xl font-bold mb-4 text-primary">
+                  {backContent.answer}
+                </h3>
               </motion.div>
 
               {backContent.details && (
                 <motion.p
                   className="text-center text-muted-foreground mt-4 max-w-md leading-relaxed"
                   initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: isFlipped ? 1 : 0, y: isFlipped ? 0 : 20 }}
+                  animate={{
+                    opacity: isFlipped ? 1 : 0,
+                    y: isFlipped ? 0 : 20,
+                  }}
                   transition={{ duration: 0.3, delay: 0.2 }}
                 >
                   {backContent.details}
@@ -176,7 +190,12 @@ export default function FlashCard({
                 animate={{ opacity: isFlipped ? 1 : 0 }}
                 transition={{ duration: 0.3, delay: 0.3 }}
               >
-                <Button variant="ghost" size="sm" className="text-sm" onClick={handleFlip}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-sm"
+                  onClick={handleFlip}
+                >
                   <RotateCw className="mr-2 h-4 w-4" />
                   Flip Back
                 </Button>
@@ -186,5 +205,5 @@ export default function FlashCard({
         </div>
       </motion.div>
     </AnimatePresence>
-  )
+  );
 }

@@ -1,31 +1,33 @@
-"use client"
+"use client";
 
-import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Edit, Trash2, Eye } from "lucide-react"
-import { motion } from "framer-motion"
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Edit, Trash2, Eye } from "lucide-react";
+import { motion } from "framer-motion";
 
 interface FlashCardData {
-  question: string
-  hint?: string
-  answer: string
-  details?: string
+  question: string;
+  hint?: string;
+  answer: string;
+  details?: string;
 }
 
 interface CardListProps {
-  cards: FlashCardData[]
-  onEdit: (index: number) => void
-  onDelete: (index: number) => void
-  onSelect: (index: number) => void
+  cards: FlashCardData[];
+  onEdit: (index: number) => void;
+  onDelete: (index: number) => void;
+  onSelect: (index: number) => void;
 }
 
-export default function CardList({ cards, onEdit, onDelete, onSelect }: CardListProps) {
+export function CardList({ cards, onEdit, onDelete, onSelect }: CardListProps) {
   if (cards.length === 0) {
     return (
       <div className="text-center py-8">
-        <p className="text-muted-foreground">No cards available. Create some cards to get started!</p>
+        <p className="text-muted-foreground">
+          No cards available. Create some cards to get started!
+        </p>
       </div>
-    )
+    );
   }
 
   return (
@@ -48,18 +50,36 @@ export default function CardList({ cards, onEdit, onDelete, onSelect }: CardList
                         Hint: {card.hint}
                       </div>
                     )}
-                    <div className="bg-primary/10 text-primary px-2 py-1 rounded text-xs">Answer: {card.answer}</div>
+                    <div className="bg-primary/10 text-primary px-2 py-1 rounded text-xs">
+                      Answer: {card.answer}
+                    </div>
                   </div>
-                  {card.details && <p className="text-sm text-muted-foreground line-clamp-2">{card.details}</p>}
+                  {card.details && (
+                    <p className="text-sm text-muted-foreground line-clamp-2">
+                      {card.details}
+                    </p>
+                  )}
                 </div>
                 <div className="flex space-x-1 ml-4">
-                  <Button variant="ghost" size="icon" onClick={() => onSelect(index)}>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => onSelect(index)}
+                  >
                     <Eye className="h-4 w-4" />
                   </Button>
-                  <Button variant="ghost" size="icon" onClick={() => onEdit(index)}>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => onEdit(index)}
+                  >
                     <Edit className="h-4 w-4" />
                   </Button>
-                  <Button variant="ghost" size="icon" onClick={() => onDelete(index)}>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => onDelete(index)}
+                  >
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
@@ -69,5 +89,5 @@ export default function CardList({ cards, onEdit, onDelete, onSelect }: CardList
         </motion.div>
       ))}
     </div>
-  )
+  );
 }

@@ -1,83 +1,106 @@
-"use client"
+"use client";
 
-import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Trash2, BookOpen } from "lucide-react"
-import { motion } from "framer-motion"
-import { formatDistanceToNow } from "date-fns"
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Trash2, BookOpen, ArrowLeft } from "lucide-react";
+import { motion } from "framer-motion";
+import { formatDistanceToNow } from "date-fns";
+import { FlashCardSet } from "@/types/flashcard";
 
 interface FlashCardData {
-  question: string
-  hint?: string
-  answer: string
-  details?: string
+  question: string;
+  hint?: string;
+  answer: string;
+  details?: string;
 }
 
 interface CardSet {
-  id: string
-  name: string
-  cards: FlashCardData[]
-  isAIGenerated: boolean
-  createdAt: string
+  id: string;
+  name: string;
+  cards: FlashCardData[];
+  isAIGenerated: boolean;
+  createdAt: string;
 }
 
 interface CardSetListProps {
-  cardSets: CardSet[]
-  onSelect: (id: string) => void
-  onDelete: (id: string) => void
-  currentSetId: string | null
+  cardSets: FlashCardSet[];
+  onSelect: (setId: string) => void;
+  onDelete: (setId: string) => void;
+  currentSetId: string | null;
+  onReturn?: () => void;
 }
 
-export default function CardSetList({ cardSets, onSelect, onDelete, currentSetId }: CardSetListProps) {
-  if (cardSets.length === 0) {
-    return (
-      <div className="text-center py-8">
-        <p className="text-muted-foreground">No saved card sets. Create and save a set to see it here!</p>
-      </div>
-    )
-  }
-
+export function CardSetList({
+  cardSets,
+  onSelect,
+  onDelete,
+  currentSetId,
+  onReturn,
+}: CardSetListProps) {
   return (
-    <div className="space-y-4">
-      {cardSets.map((set, index) => (
-        <motion.div
-          key={set.id}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: index * 0.05 }}
-        >
-          <Card
-            className={`border-primary/20 hover:border-primary/40 transition-colors ${
-              currentSetId === set.id ? "border-primary" : ""
-            }`}
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.3 }}
+      className="w-full max-w-2xl mx-auto"
+    >
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-2xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
+          Saved Card Sets
+        </h2>
+        {onReturn && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onReturn}
+            className="h-8 px-2 sm:px-3"
           >
-            <CardContent className="p-4">
-              <div className="flex justify-between items-start">
-                <div className="space-y-2 flex-1">
-                  <h3 className="font-medium">{set.name}</h3>
-                  <div className="flex flex-wrap gap-2 text-sm">
-                    <div className="bg-primary/10 text-primary px-2 py-1 rounded text-xs">{set.cards.length} cards</div>
-                    <div className="bg-muted px-2 py-1 rounded text-xs">
-                      {set.isAIGenerated ? "AI Generated" : "Manually Created"}
-                    </div>
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    Created {formatDistanceToNow(new Date(set.createdAt))} ago
+            <ArrowLeft className="h-4 w-4 mr-1 sm:mr-2" />
+            <span className="text-sm">Return</span>
+          </Button>
+        )}
+      </div>
+
+      {cardSets.length === 0 ? (
+        <Card className="p-6 text-center text-muted-foreground">
+          <p>No saved card sets yet. Create some flashcards to get started!</p>
+        </Card>
+      ) : (
+        <div className="space-y-4">
+          {cardSets.map((set) => (
+            <Card
+              key={set.id}
+              className={`p-4 cursor-pointer transition-colors ${
+                currentSetId === set.id
+                  ? "border-primary bg-primary/5"
+                  : "hover:bg-muted/50"
+              }`}
+              onClick={() => onSelect(set.id)}
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="font-semibold">{set.topic}</h3>
+                  <p className="text-sm text-muted-foreground">
+                    {set.cards.length} cards
                   </p>
                 </div>
-                <div className="flex space-x-1 ml-4">
-                  <Button variant="ghost" size="icon" onClick={() => onSelect(set.id)}>
-                    <BookOpen className="h-4 w-4" />
-                  </Button>
-                  <Button variant="ghost" size="icon" onClick={() => onDelete(set.id)}>
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDelete(set.id);
+                  }}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
               </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-      ))}
-    </div>
-  )
+            </Card>
+          ))}
+        </div>
+      )}
+    </motion.div>
+  );
 }
